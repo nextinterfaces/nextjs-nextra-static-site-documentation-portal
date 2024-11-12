@@ -1,0 +1,248 @@
+import { Callout } from 'nextra/components'
+
+![agents](/docs/content/agents-banner.svg)
+
+Botpress offers a variety of specialized Agents to enhance your chatbot's capabilities and adaptability. These Agents are designed to perform specific tasks, each contributing to the overall performance of your chatbot. Here, we introduce five of our agents: HITL, Summary, Personality, Knowledge, and Translator Agents.
+
+<iframe
+  data-youtube-iframe
+  width="720"
+  height="480"
+  src="https://www.youtube.com/embed/vVLDSxZouxc"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
+
+## HITL Agent
+
+The HITL Agent is a feature that allows human agents to take over the conversation from the chatbot. It's useful for instances when the bot cannot handle a user's request effectively, and a human touch is needed.
+
+### Configuration
+
+- **Enable Agent**: Turn this on to allow a human agent to participate in conversations. When it's on, the agent can handle messages that the bot can't.
+
+- **Escalation Integration**: This is where you choose the service that will notify your human agents when they need to take over. For example, [Zendesk](../agent-handoff/zendesk/) could be a service you use.
+
+- **Queue Timeout (in minutes)**: This is how long a user's message will wait for a human agent to respond before timing out. You can set this to any number of minutes, like 10.
+
+- **Intent to cancel HITL**: If the user wants to stop talking to a human and go back to the bot, this setting decides which command they should use, like **cancel**.
+
+- **Transcript Context**: This includes the conversation's transcript that will be sent to the human agent. It helps the agent understand what has been discussed so far.
+
+- **On Waiting for Agent**: Here you can add any special instructions or code that you want to execute while the user is waiting for a human agent to respond.
+
+- **On Agent Assigned**: Similar to the above, this is where you can add instructions or code for when a human agent is assigned to the conversation.
+
+- **On Agent Ended Interaction**: This is where you set up what happens after a human agent finishes their conversation with a user.
+
+- **On User Cancelled**: Here you specify the actions or code that will run if the user decides to cancel the interaction with the human agent.
+
+- **On Timed Out Waiting for Agent**: This is where you can define what should happen if no human agent responds within the set timeout period.
+
+### Exposed Variables
+
+These are like shortcuts to specific pieces of information that the HITL Agent can use or provide.
+
+- `{{conversation.HITLAgent.isHitl}}`: This tells you if a human agent is currently handling the conversation.
+
+- `{{conversation.HITLAgent.hitlSessionStatus}}`: This gives you the status of the human agent session, like whether it's active or has ended.
+
+- `{{conversation.HITLAgent.hitlContext}}`: This provides context about the HITL session, which can include the transcript and summary of the conversation so far.
+
+### Usage
+
+Once you've enabled the HITL Agent, you can use the exposed variables in any place where user code is permitted. This includes Hooks, workflow Executed Code cards, AI Task cards, and Transition cards.
+
+To start a human agent session, you can use the `Start HITL` card from the Toolbox. This will trigger the HITL Agent to start looking for a human agent to take over the conversation.
+
+## Summary Agent
+
+The Summary Agent is designed to condense lengthy user responses or extensive text into a brief, digestible summary. This feature is crucial in ensuring that the main events of a conversation are quickly understood, thus making interactions with your bot more efficient. The agent also creates a transcript of the conversation going back a certain amount of turns.
+
+### Settings
+
+- **Summary Max Tokens**: The maximum length of the generated summary measured in LLM tokens. A token can consist of a few letters, an entire word, or a punctuation mark. This parameter allows you to set a limit on how lengthy your summaries can be, ensuring they remain concise and manageable. It can range from 1 to 500 tokens, and the default is 100.
+- **Transcript Max Lines**: The maximum number of lines (conversation turns) in the transcript. This parameter allows you to set a limit on how lengthy your transcripts can be, ensuring they remain concise and manageable. It can range from 0 (to disable) to 100 lines, and the default is 10.
+
+### Exposed Variables
+
+- **conversation.SummaryAgent.summary**: This is the generated summary of the conversation thus far. It's important to note that this parameter is only available after each conversation turn.
+- **conversation.SummaryAgent.transcript**: This is the transcript of the conversation thus far. It's updated after each conversation turn.
+
+### Usage
+
+Upon enabling the Summary Agent, its variables become accessible and they can be incorporated in any place where user code is permitted. This includes Hooks, workflow Executed Code cards, AI Task cards, and Transition cards. By default the [Knowledge Agent](#knowledge-agent) uses the summary and transcript variables to understand the context of the user's question, so make sure the Summary Agent is enabled if you want to use the Knowledge Agent contextual answering.
+
+For example, if you wish to send the conversation summary to the user, create a Text card and include the summary like this:
+
+```js
+'Your conversation summary: {{conversation.SummaryAgent.summary}}'
+```
+
+This would then output a brief summary of the conversation so far.
+
+### Conflicts
+
+There are no known conflicts with the Summary Agent and other Botpress functionalities or agents. However, please remember that the output from the Summary Agent (`conversation.SummaryAgent.summary`) is updated after each conversation turn. Therefore, ensure that you use it in context and check the summary only when it is updated.
+
+## Translator Agent
+
+<iframe
+  data-youtube-iframe
+  width="720"
+  height="360"
+  src="https://www.youtube.com/embed/fBwSLPbPqn8"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
+
+The Translator Agent allows your chatbot to interact with users in different languages, breaking language barriers and expanding the range of your bot's audience.
+
+### Configuration
+
+- **Automatically Detect User Language** - When enabled, the Translator Agent will automatically detect the user's language from their input.
+
+Activating this feature consequently sets the `{{user.TranslatorAgent.language}}` variable when it's not already defined.
+
+### Exposed Variables
+
+- **user.TranslatorAgent.language**: This variable represents the detected language of the user.
+
+### Example - setting language to french
+
+1. Open the Toolbox Cards and drag the **Set User Language** Card into your first node(ideally).
+2. Specify a language. In this case, we will use `fr` for French.
+
+The Translator Agent automatically translates the chatbot's responses into the user's language once activated. If you wish to define the user's language manually, you can directly set the `{{user.TranslatorAgent.language}}` variable.
+
+This variable is set to `null` by default, which means that the Translator Agent will automatically detect the user's language from their input.
+
+### Resetting the language
+
+Drag the **Reset User Language** Card into your flow. This will reset the `{{user.TranslatorAgent.language}}` variable to `null`.
+
+You can do this in Execute Code card as well:
+
+```javascript
+//use null to reset the language, otherwise set it to a language code
+{{user.TranslatorAgent.language}} = null;
+```
+
+<Callout type="info">
+  **Note** <br />
+  It's currently not possible to build a chatbot that can speak multiple languages at the same time, i.e. switching between
+  Spanish, English & French within the same flow.
+</Callout>
+
+<Callout type="info">
+  You can alter the Translator Agent settings for a node, by clicking it, then "Translator Agent" and toggling the
+  options. The toggle for "Detect Initial User Language" allows you to delay the moment where the language is detected.
+  The toggle for "Detect Language Change" allows you to disable the detection of a language change. This is useful if
+  you are asking the user to provide information that may be of a different language.
+</Callout>
+
+### Conflicts
+
+It is important to note that the Translator Agent may conflict with the Personality Agent. The Personality Agent is designed to manipulate chatbot responses according to pre-set personalities and could overwrite the translations done by the Translator Agent. If both the Translator Agent and the Personality Agent are enabled, the Personality Agent will take priority. If you want the Translator Agent to take effect, you may need to adjust the settings of the Personality Agent or turn it off.
+
+## Personality Agent
+
+<iframe
+  data-youtube-iframe
+  width="720"
+  height="360"
+  src="https://www.youtube.com/embed/D9EGSzKy-N0"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
+
+The Personality Agent enables you to provide your chatbot with a unique personality. It tailors the bot's behavior and responses according to the defined personality traits, providing a more engaging and human-like interaction for the users. Learn more at [Chatbot Personality](../generative-ai/chatbot-personality).
+
+### Activate Personality Rewriting
+
+To activate the Personality Agent, you need to enable the **Personality Rewriting** option of the agent.
+
+### Personality Description
+
+This is where you define the personality of your chatbot. You should describe how your chatbot is meant to behave and what it is meant to do. Including specific personality traits will influence the bot's responses. For example, if you describe the bot as a "funny cowboy that likes to add emojis to some of your messages and often refers to the user as 'my friend'", the bot will mimic this behavior in its responses.
+
+The Personality Agent, once enabled, will automatically rewrite all the messages sent by your bot to align with the described personality. For instance, a bot described as having a humorous and friendly personality might include light-hearted quips or friendly salutations like 'Hello, my friend!' in its responses.
+
+For example, if you want your bot to behave like a professional consultant, you might add this text or something similar to the Personality Description:
+
+```text
+You are a professional consultant who always uses formal language.
+You avoid slang and emojis and always address the user respectfully.
+```
+
+<Callout>
+  Enabling this Agent may add some latency to your bot's responses as it takes time to process and rewrite the messages
+  according to the defined personality traits.
+</Callout>
+
+<Callout type="info">
+  You can disable the Personality Agent in specific nodes by disabling the <b>Personality Rewriting</b> option in the
+  node's settings. This will make all the messages contained in Text or Capture cards to be sent as-is, without any
+  rewriting.
+</Callout>
+
+### Conflicts
+
+Be aware that the Personality Agent might conflict with the Translator Agent. If both are enabled, the Personality Agent has higher priority and may overwrite the translations done by the Translator Agent. Thus, if you want to ensure the effectiveness of translations, you should adjust the settings of the Personality Agent or turn it off.
+
+## Knowledge Agent
+
+This agent will make your chatbot answer questions from Knowledge Bases.
+
+It will look for questions in the user's message and try to find an answer in the context Knowledge Bases.
+
+The Knowledge Bases that are searched are the ones that are in the same folder as the current workflow, or in the parent folders.
+
+The agent will only answer when the user asks a question and the chatbot is either on the Start Node or when the workflow is on a Capture Card inside a node that has Knowledge Bases enabled.
+
+To enable Knowledge Bases on a node, click on the node in the workflow editor and then enable the **Knowledge Bases** option in the right inspector panel.
+
+### Enable Agent
+
+Turn this on to allow the chatbot to answer questions from Knowledge Bases.
+
+### Configuration
+
+#### Answer Manually(advanced)
+Your chatbot will not answer automatically. When this option is enabled, you need to manually reply to the user with `{{turn.KnowledgeAgent.answer}}`. This can be done with a Say node, on a Capture Card or with a Hook (advanced).
+
+#### Additional Context
+Providing context enhances the ability of knowledge bases to deliver more accurate answers. We recommend including the transcript of the conversation and/or the summary of the conversation provided by the Summary Agent. You can also include any other information that you think might be relevant to the KB.
+
+#### Model Strategy
+
+Determines which model will be used to answer the user's question. 
+  - **Fastest**: Will always use the fastest model to answer the user's question.(GPT 3.5-Turbo)
+  - **Hybrid**: Will try to answer using the fastest model and fallback to the best model if the fastest model doesn't have an answer.
+  - **Best**: Will always use slowest but most accurate model to answer the user's question.(GPT 4-Turbo)
+
+
+#### Chunks Count
+
+This setting allows you to control the number of chunks that the agent will use to answer the user's question. The agent will split the user's question into chunks and try to find an answer for each chunk. The agent will then merge the answers to form the final answer. Increasing the number of chunks can improve the quality of the answer but can also increase the response time and will cost more AI tokens.
+
+
+### Exposed Variables
+
+- **turn.KnowledgeAgent.answer**: This variable represents the answer from the Knowledge Base. It is set to `null` if no answer is found.
+- **turn.KnowledgeAgent.responded**: This variable is set to `true` if the Knowledge Agent has answered the user's question **automatically**. It is set to `false` otherwise if manual answering is enabled.
+- **turn.KnowledgeAgent.citations**: This variable represents the citations from the Knowledge Base. It is set to `null` if no citations are found.
+
+## Analytics Agent
+
+<Callout type="info">
+  The analytics agent is only available to Team and Enterprise users. [Learn more.](https://botpress.com/pricing)
+</Callout>
+
+For detailed information on the Analytics Agent, including how to set up and track custom events, refer to the [Admin Dashboard](https://botpress.com/docs/cloud/admin-dashboard/analytics/) section.

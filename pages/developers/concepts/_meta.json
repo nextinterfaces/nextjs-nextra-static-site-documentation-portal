@@ -1,0 +1,15 @@
+{
+  "overview": "Overview",
+  "architecture": "Architecture",
+  "tags": "Tags",
+  "channels": "Channels",
+  "configuration": "Configuration",
+  "user": "User",
+  "conversation": "Conversation",
+  "messages": "Messages",
+  "events": "Events",
+  "states": "States",
+  "actions": "Actions",
+  "definitions": "Definitions",
+  "secrets": "Secrets"
+}

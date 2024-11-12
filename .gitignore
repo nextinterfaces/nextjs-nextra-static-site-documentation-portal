@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+.cache/
+src/gatsby-types.d.ts
+static/openApi
+.next
+dist
+.env.local
+out
+pages/api-documentation/index.mdx
+.vercel
+.env*.local
+.ignore.me.*
+lefthook.yml

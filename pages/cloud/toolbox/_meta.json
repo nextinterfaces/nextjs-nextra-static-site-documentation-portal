@@ -1,0 +1,13 @@
+{
+  "send-message": "",
+  "capture-information": "",
+  "execute-code": "",
+  "ai-task": "AI Task",
+  "ai-transition": "AI Transition",
+  "ai-generate-text": "AI Generate Text",
+  "table-cards": "",
+  "transition-to": "Transitions",
+  "events-triggers": "Events & Triggers",
+  "query-kb": "Query Knowledge Bases", 
+  "utilities": "Utilities"
+}

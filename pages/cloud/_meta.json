@@ -1,0 +1,13 @@
+{
+  "index": "Home",
+  "getting-started": "Getting Started",
+  "admin-dashboard": "Admin Dashboard",
+  "generative-ai": "Generative AI",
+  "studio": "Studio Interface",
+  "toolbox": "Toolbox",
+  "channels": "Messaging Channels",
+  "exporting-bot-data": "Exporting Bot Data",
+  "issues": "Issues",
+  "agent-handoff": "Live Agent Handoff",
+  "user-profile": "User Profile"
+}

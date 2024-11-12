@@ -1,0 +1,10 @@
+{
+  "intro":"Introduction",
+  "states": "States",
+  "register_unregister": "Register & Unregister",
+  "actions": "Actions",
+  "events": "Events",
+  "handler": "Handler",
+  "logging": "Logging",
+  "build-integration": "Building a Custom Integration"
+}
